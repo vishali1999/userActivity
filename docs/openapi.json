@@ -28,25 +28,24 @@
                   "type": "object",
                   "properties": {
                     "userId": {
-                      "type": "string",
+                      "type": "number",
                       "description": "The unique ID of the user",
-                      "example": "12345"
+                      "example": 12345
                     },
-                    "businessNumber": {
-                      "type": "string",
-                      "description": "The business number associated with the user",
-                      "example": "67890"
+                    "businessID": {
+                      "type": "number",
+                      "description": "The business ID associated with the user",
+                      "example": 149546071353527
                     },
-                    "message": {
+                    "userActivity": {
                       "type": "string",
                       "description": "A message describing the user activity",
                       "example": "User opened the channel selection modal"
                     },
                     "timestamp": {
-                      "type": "string",
-                      "format": "date-time",
-                      "description": "The timestamp of the activity",
-                      "example": "2024-11-08T12:34:56Z"
+                      "type": "integer",
+                      "description": "The timestamp of the activity in UTC milliseconds",
+                      "example": 1725860496000
                     },
                     "actionName": {
                       "type": "string",
@@ -85,7 +84,7 @@
                         }
                       }
                     },
-                    "text": {
+                    "userEnteredText": {
                       "type": "string",
                       "description": "Any text content provided by the user",
                       "example": "User is typing a post content"
@@ -95,7 +94,8 @@
                       "description": "Array of media assets attached by the user",
                       "items": {
                         "type": "string",
-                        "example": "image.png"
+                        "format": "uri",
+                        "example": "https://example.com/image.png"
                       }
                     }
                   }
@@ -155,23 +155,23 @@
         "operationId": "getLogs",
         "parameters": [
           {
-            "name": "businessNumber",
+            "name": "businessID",
             "in": "query",
             "required": true,
-            "description": "The business number associated with the logs",
+            "description": "The business ID associated with the logs",
             "schema": {
-              "type": "string",
-              "example": "67890"
+              "type": "number",
+              "example": 67890
             }
           },
           {
             "name": "userId",
             "in": "query",
-            "required": true,
-            "description": "The unique ID of the user",
+            "required": false,
+            "description": "The unique ID of the user (optional)",
             "schema": {
-              "type": "string",
-              "example": "12345"
+              "type": "number",
+              "example": 12345
             }
           },
           {
@@ -246,21 +246,21 @@
                         "type": "object",
                         "properties": {
                           "userId": {
-                            "type": "string",
-                            "example": "12345"
+                            "type": "number",
+                            "example": 12345
                           },
-                          "businessNumber": {
-                            "type": "string",
-                            "example": "67890"
+                          "businessID": {
+                            "type": "number",
+                            "example": 67890
                           },
                           "message": {
                             "type": "string",
                             "example": "User opened the channel selection modal"
                           },
                           "timestamp": {
-                            "type": "string",
-                            "format": "date-time",
-                            "example": "2024-11-08T12:34:56Z"
+                            "type": "integer",
+                            "description": "The timestamp in UTC milliseconds",
+                            "example": 1725860496000
                           },
                           "actionName": {
                             "type": "string",
@@ -292,7 +292,7 @@
                               }
                             }
                           },
-                          "text": {
+                          "userEnteredText": {
                             "type": "string",
                             "example": "User is typing a post content"
                           },
@@ -300,7 +300,8 @@
                             "type": "array",
                             "items": {
                               "type": "string",
-                              "example": "image.png"
+                              "format": "uri",
+                              "example": "https://example.com/image.png"
                             }
                           }
                         }
