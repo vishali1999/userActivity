@@ -47,7 +47,7 @@
                       "description": "The timestamp of the activity in UTC milliseconds",
                       "example": 1725860496000
                     },
-                    "actionName": {
+                    "action": {
                       "type": "string",
                       "description": "The name of the action performed",
                       "example": "openModal"
@@ -60,11 +60,6 @@
                           "type": "string",
                           "description": "The operating system of the user's device",
                           "example": "Windows 10"
-                        },
-                        "cpu": {
-                          "type": "string",
-                          "description": "The CPU details",
-                          "example": "Intel Core i7"
                         }
                       }
                     },
@@ -150,8 +145,28 @@
     },
     "/getLogs": {
       "get": {
+        "400": {
+          "description": "Bad request, invalid parameters",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "success": {
+                    "type": "boolean",
+                    "example": false
+                  },
+                  "error": {
+                    "type": "string",
+                    "example": "Invalid query parameters"
+                  }
+                }
+              }
+            }
+          }
+        },
         "summary": "Retrieve user activity logs",
-        "description": "Fetches user activity logs based on provided parameters, with optional filtering and pagination.",
+        "description": "Fetches user activity logs based on provided parameters, with optional filtering and pagination. The `fields` parameter allows users to specify which fields to include in the response for better performance.",
         "operationId": "getLogs",
         "parameters": [
           {
@@ -197,7 +212,7 @@
             }
           },
           {
-            "name": "actionName",
+            "name": "action",
             "in": "query",
             "required": false,
             "description": "The name of the action to filter logs (optional)",
@@ -225,6 +240,16 @@
               "type": "integer",
               "default": 10
             }
+          },
+          {
+            "name": "fields",
+            "in": "query",
+            "required": false,
+            "description": "A comma-separated list of fields to include in the response. Leave blank to include all fields.",
+            "schema": {
+              "type": "string",
+              "example": "userId,message,timestamp,action"
+            }
           }
         ],
         "responses": {
@@ -241,100 +266,76 @@
                     },
                     "logs": {
                       "type": "array",
-                      "description": "Array of user activity logs",
-                      "items": {
-                        "type": "object",
-                        "properties": {
-                          "userId": {
-                            "type": "number",
-                            "example": 12345
-                          },
-                          "businessID": {
-                            "type": "number",
-                            "example": 67890
-                          },
-                          "message": {
-                            "type": "string",
-                            "example": "User opened the channel selection modal"
-                          },
-                          "timestamp": {
-                            "type": "integer",
-                            "description": "The timestamp in UTC milliseconds",
-                            "example": 1725860496000
-                          },
-                          "actionName": {
-                            "type": "string",
-                            "example": "openModal"
-                          },
-                          "systemDetails": {
-                            "type": "object",
-                            "properties": {
-                              "os": {
-                                "type": "string",
-                                "example": "Windows 10"
-                              },
-                              "cpu": {
-                                "type": "string",
-                                "example": "Intel Core i7"
-                              }
-                            }
-                          },
-                          "browserDetails": {
-                            "type": "object",
-                            "properties": {
-                              "name": {
-                                "type": "string",
-                                "example": "Google Chrome"
-                              },
-                              "version": {
-                                "type": "string",
-                                "example": "97.0.4692.99"
-                              }
-                            }
-                          },
-                          "userEnteredText": {
-                            "type": "string",
-                            "example": "User is typing a post content"
-                          },
-                          "mediaAssets": {
-                            "type": "array",
-                            "items": {
+                      "description": "Array of user activity logs"
+                    },
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "userId": {
+                          "type": "number",
+                          "example": 12345
+                        },
+                        "businessID": {
+                          "type": "number",
+                          "example": 67890
+                        },
+                        "message": {
+                          "type": "string",
+                          "example": "User opened the channel selection modal"
+                        },
+                        "timestamp": {
+                          "type": "integer",
+                          "description": "The timestamp in UTC milliseconds",
+                          "example": 1725860496000
+                        },
+                        "action": {
+                          "type": "string",
+                          "example": "openModal"
+                        },
+                        "systemDetails": {
+                          "type": "object",
+                          "properties": {
+                            "os": {
                               "type": "string",
-                              "format": "uri",
-                              "example": "https://example.com/image.png"
+                              "example": "Windows 10"
                             }
+                          }
+                        },
+                        "browserDetails": {
+                          "type": "object",
+                          "properties": {
+                            "name": {
+                              "type": "string",
+                              "example": "Google Chrome"
+                            },
+                            "version": {
+                              "type": "string",
+                              "example": "97.0.4692.99"
+                            }
+                          }
+                        },
+                        "userEnteredText": {
+                          "type": "string",
+                          "example": "User is typing a post content"
+                        },
+                        "mediaAssets": {
+                          "type": "array",
+                          "items": {
+                            "type": "string",
+                            "format": "uri",
+                            "example": "https://example.com/image.png"
                           }
                         }
                       }
-                    },
-                    "page": {
-                      "type": "integer",
-                      "example": 1
-                    },
-                    "totalPages": {
-                      "type": "integer",
-                      "example": 5
                     }
-                  }
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "Bad request, invalid parameters",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "success": {
-                      "type": "boolean",
-                      "example": false
-                    },
-                    "error": {
-                      "type": "string",
-                      "example": "Invalid query parameters"
-                    }
+                  },
+                  "page": {
+                    "type": "integer",
+                    "example": 1
+                  },
+                  "totalPages": {
+                    "type": "integer",
+                    "example": 5
                   }
                 }
               }
